@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class TileState(Enum):
     EMPTY = 0
     SNAKE_HEAD = 1
@@ -8,11 +9,26 @@ class TileState(Enum):
     APPLE = 4
     WALL = 5
 
+SOUTH = (0,1)
+EAST = (1,0)
+WEST = (-1,0)
+NORTH = (0,-1)
 
-SOUTH = (1,0)
-EAST = (0,1)
-WEST = (0,-1)
-NORTH = (-1,0)
+class Coordinate:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def str(self):
+        return f"[{self.x},{self.y}]"
+
+    def __repr__(self):
+        return self.str()
+ 
+    def __eq__(self, other):
+        if isinstance(other, Coordinate):
+            return self.x == other.x and self.y == other.y
+        return False
 
 class GameState:
     def __init__(self, grid, snake_body, snake_direction, snake_speed):
@@ -21,11 +37,54 @@ class GameState:
         self.snake_speed = snake_speed
         self.grid = grid
         self.elapsed_time = 0
+        self.died = False
+    
+    
+    def get_tile(self, coord):
+        return self.grid[coord.y][coord.x]
+    
+    def set_tile(self, coord, state):
+        old_value = self.grid[coord.y][coord.x]
+        self.grid[coord.y][coord.x] = state
+        new_value = self.grid[coord.y][coord.x]
+        return old_value, new_value
 
-    def evaluate(self, frame_time, player_input):
-        self.elapsed_time = self.elapsed_time + frame_time
-        if self.elapsed_time > 15:
-            new_pos = (self.snake_body[0][1] + player_input[1], self.snake_body[0][0] + player_input[0])
-            self.snake_body.insert(0,new_pos)
-            old_pos = self.snake_body.pop()
+    def set_direction(self, direction):
+        self.snake_direction = direction
+    
+    def move_snake(self):
+        if self.died:
+            return
+        nbody_pos = self.snake_body[0] 
+        new_pos = Coordinate(nbody_pos.x + self.snake_direction[0], nbody_pos.y + self.snake_direction[1])
+        if self.get_tile(new_pos) == TileState.WALL:
+            self.died = True
+            return
+        self.set_tile(nbody_pos, TileState.SNAKE_BODY)
+        self.snake_body.insert(0,new_pos)
+        old_pos = self.snake_body.pop()
+        self.set_tile(old_pos, TileState.EMPTY)
+        self.set_tile(new_pos, TileState.SNAKE_HEAD)
+        tail_pos = self.snake_body[-1]
+        self.set_tile(tail_pos, TileState.SNAKE_TAIL)
             
+            
+    def get_ascii_render(self):
+        ascii_map = {
+            TileState.EMPTY: " ",
+            TileState.SNAKE_HEAD: "R",
+            TileState.APPLE: "@",
+            TileState.SNAKE_BODY: "G",
+            TileState.SNAKE_TAIL: "g",
+            TileState.WALL: "W"
+            }
+        
+        ascii_art = ""
+        for row in self.grid:
+            for tile in row:
+                ascii_art = ascii_art + ascii_map[tile]
+            ascii_art = ascii_art + "\n"
+
+        
+        return ascii_art
+        
