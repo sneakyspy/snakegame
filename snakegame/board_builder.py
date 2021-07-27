@@ -4,9 +4,9 @@ import math
 
 def board_builder(row_count, column_count):
     grid = []
-    for row_number in range(0, row_count - 1):
+    for row_number in range(0, row_count):
         grid.insert(row_number, [])
-        for column_number in range(0, column_count - 1):
+        for column_number in range(0, column_count):
             if row_number == 0 or column_number == 0 or row_number == row_count - 1 or column_number == column_count - 1:
                 tile = TileState.WALL
             else:
