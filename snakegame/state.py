@@ -16,6 +16,7 @@ EAST = (1,0)
 WEST = (-1,0)
 NORTH = (0,-1)
 
+
 class Coordinate:
     def __init__(self, x, y):
         self.x = x
@@ -40,9 +41,8 @@ class GameState:
         self.grid = grid
         self.row_count = len(self.grid)
         self.column_count = len(self.grid[0])
-        self.elapsed_time = 0
         self.died = False
-
+        
     def get_tile(self, coord):
         return self.grid[coord.y][coord.x]
     
@@ -51,7 +51,7 @@ class GameState:
         self.grid[coord.y][coord.x] = state
         new_value = self.grid[coord.y][coord.x]
         return old_value, new_value
-
+    
     def set_direction(self, direction):
         self.snake_direction = direction
     
@@ -63,15 +63,11 @@ class GameState:
                 self.set_tile(Coordinate(x, y), TileState.APPLE)
                 return
         
-        
-    
     def move_snake(self):     
         if self.died:
             return
-
         nbody_pos = self.snake_body[0] 
         new_pos = Coordinate(nbody_pos.x + self.snake_direction[0], nbody_pos.y + self.snake_direction[1])
-
         tile = self.get_tile(new_pos)
         if tile in (TileState.WALL, TileState.SNAKE_HEAD, TileState.SNAKE_BODY, TileState.SNAKE_TAIL):
             self.died = True
@@ -91,9 +87,15 @@ class GameState:
             tail_pos = self.snake_body[-1]
             self.set_tile(tail_pos, TileState.SNAKE_TAIL)
         
-        
-            
-            
+    def update(self):
+        Value = NORTH
+        if True:
+            self.set_direction(Value)
+            self.move_snake()
+            return
+    
+    
+    
     def get_ascii_render(self):
         ascii_map = {
             TileState.EMPTY: " ",
@@ -109,7 +111,4 @@ class GameState:
             for tile in row:
                 ascii_art = ascii_art + ascii_map[tile]
             ascii_art = ascii_art + "\n"
-
-        
         return ascii_art
-        

@@ -14,8 +14,8 @@ def board_builder(row_count, column_count):
             grid[row_number].insert(column_number, tile)
     snakehead = Coordinate(math.floor(column_count/2), math.floor(row_count/2)-1)
     snaketail = Coordinate(snakehead.x, snakehead.y +1)
-    s = GameState(grid, [snakehead, snaketail], NORTH, 1)
-    print(s.get_ascii_render())
-    s.set_tile(snakehead, TileState.SNAKE_HEAD)
-    s.set_tile(snaketail, TileState.SNAKE_TAIL)
+    state = GameState(grid, [snakehead, snaketail], NORTH, 1)
+    state.set_tile(snakehead, TileState.SNAKE_HEAD)
+    state.set_tile(snaketail, TileState.SNAKE_TAIL)
+    state.generate_apple()
     return s
