@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from snakegame.state import GameState, Coordinate, TileState, NORTH, SOUTH, EAST, WEST
 
 def sample_starting_state():
@@ -90,7 +92,47 @@ def test_bigsnake_can_turn():
     s.move_snake()
     print(s.get_ascii_render())
     assert s.snake_body == [ Coordinate(5,2), Coordinate(4,2), Coordinate(4,3) ]
+
+def test_snake_can_eat():
+    s = sample_starting_state()
+    print(s.get_ascii_render())
+    s.move_snake()
+    print(s.get_ascii_render())
+    s.set_direction(WEST)
+    s.move_snake()
+    print(s.get_ascii_render())
+    s.move_snake()
+    print(s.get_ascii_render())
+    s.move_snake()
+    print(s.get_ascii_render())
     
+    assert s.get_tile(Coordinate(1, 2)) == TileState.SNAKE_HEAD
+    assert s.get_tile(Coordinate(2, 2)) == TileState.SNAKE_BODY
+    assert s.get_tile(Coordinate(3, 2)) == TileState.SNAKE_TAIL
+
+
+def test_big_snake_can_eat():
+    s = sample_starting_state2()
+    print(s.get_ascii_render())
+    s.move_snake()
+    print(s.get_ascii_render())
+    s.set_direction(WEST)
+    s.move_snake()
+    print(s.get_ascii_render())
+    s.move_snake()
+    print(s.get_ascii_render())
+    s.move_snake()
+    print(s.get_ascii_render())
+    assert s.get_tile(Coordinate(1, 2)) == TileState.SNAKE_HEAD
+    assert s.get_tile(Coordinate(2, 2)) == TileState.SNAKE_BODY
+    assert s.get_tile(Coordinate(3, 2)) == TileState.SNAKE_BODY
+    assert s.get_tile(Coordinate(4, 2)) == TileState.SNAKE_TAIL
+
+
+
+
+
+
 
 def test_ascii_render():
     s = sample_starting_state()

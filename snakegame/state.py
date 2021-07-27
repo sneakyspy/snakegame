@@ -1,4 +1,6 @@
+import random
 from enum import Enum
+
 
 
 class TileState(Enum):
@@ -36,10 +38,11 @@ class GameState:
         self.snake_direction = snake_direction
         self.snake_speed = snake_speed
         self.grid = grid
+        self.row_count = len(self.grid)
+        self.column_count = len(self.grid[0])
         self.elapsed_time = 0
         self.died = False
-    
-    
+
     def get_tile(self, coord):
         return self.grid[coord.y][coord.x]
     
@@ -52,21 +55,43 @@ class GameState:
     def set_direction(self, direction):
         self.snake_direction = direction
     
-    def move_snake(self):
+    def generate_apple(self):
+        while True:
+            x = random.randint(0, self.column_count - 1)
+            y = random.randint(0, self.row_count - 1)
+            if self.get_tile(Coordinate(x, y)) == TileState.EMPTY:
+                self.set_tile(Coordinate(x, y), TileState.APPLE)
+                return
+        
+        
+    
+    def move_snake(self):     
         if self.died:
             return
+
         nbody_pos = self.snake_body[0] 
         new_pos = Coordinate(nbody_pos.x + self.snake_direction[0], nbody_pos.y + self.snake_direction[1])
-        if self.get_tile(new_pos) == TileState.WALL:
+
+        tile = self.get_tile(new_pos)
+        if tile in (TileState.WALL, TileState.SNAKE_HEAD, TileState.SNAKE_BODY, TileState.SNAKE_TAIL):
             self.died = True
-            return
-        self.set_tile(nbody_pos, TileState.SNAKE_BODY)
-        self.snake_body.insert(0,new_pos)
-        old_pos = self.snake_body.pop()
-        self.set_tile(old_pos, TileState.EMPTY)
-        self.set_tile(new_pos, TileState.SNAKE_HEAD)
-        tail_pos = self.snake_body[-1]
-        self.set_tile(tail_pos, TileState.SNAKE_TAIL)
+            #if the snake, dies then do not continue code
+        elif tile == TileState.APPLE:
+            self.snake_body.insert(0, new_pos)
+            self.set_tile(new_pos, TileState.SNAKE_HEAD)
+            self.set_tile(nbody_pos, TileState.SNAKE_BODY)
+            self.generate_apple()
+            
+        else:
+            self.set_tile(nbody_pos, TileState.SNAKE_BODY)
+            self.snake_body.insert(0, new_pos)
+            old_pos = self.snake_body.pop()
+            self.set_tile(old_pos, TileState.EMPTY)
+            self.set_tile(new_pos, TileState.SNAKE_HEAD)
+            tail_pos = self.snake_body[-1]
+            self.set_tile(tail_pos, TileState.SNAKE_TAIL)
+        
+        
             
             
     def get_ascii_render(self):
