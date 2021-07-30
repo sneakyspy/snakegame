@@ -1,6 +1,3 @@
-from snakegame.state import GameState
-from snakegame.board_builder import board_builder, grid
-
 class TimeManager:
     def __init__(self, game_state):
         self.game_state = game_state
@@ -10,10 +7,10 @@ class TimeManager:
     def handle_time_passed(self, this_frame_elapsed_time):
         self.elapsed_time = self.elapsed_time + this_frame_elapsed_time
         tpm = self.time_per_move()
-        if self.elapsed_time > tpm:
+        while self.elapsed_time > tpm:
             self.elapsed_time = self.elapsed_time - tpm
             self.game_state.move_snake()
-
+        
     def time_per_move(self):
         ss = self.game_state.snake_speed
         # transform snake speed into time per move
@@ -22,8 +19,5 @@ class TimeManager:
             tpm = tpm - tpm*0.08
             ss = ss - 1
         return int(tpm)
-    
-    def playgame
-    
     
     

@@ -18,4 +18,4 @@ def board_builder(row_count, column_count):
     state.set_tile(snakehead, TileState.SNAKE_HEAD)
     state.set_tile(snaketail, TileState.SNAKE_TAIL)
     state.generate_apple()
-    return s
+    return state
