@@ -128,8 +128,12 @@ def test_big_snake_can_eat():
     assert s.get_tile(Coordinate(3, 2)) == TileState.SNAKE_BODY
     assert s.get_tile(Coordinate(4, 2)) == TileState.SNAKE_TAIL
 
-
-
+def test_invalid_dir():
+    s = sample_starting_state()
+    s.set_direction(EAST)
+    s.set_direction(SOUTH)
+    s.move_snake()
+    assert s.died == False
 
 
 

@@ -16,7 +16,7 @@ class TimeManager:
         # transform snake speed into time per move
         tpm = 500
         while ss > 1:
-            tpm = tpm - tpm*0.08
+            tpm = tpm - tpm*0.1
             ss = ss - 1
         return int(tpm)
     
